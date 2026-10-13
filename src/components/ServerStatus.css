@@ -1,0 +1,22 @@
+.server-status {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  width: min(360px, calc(100vw - 40px)); padding: 14px; box-sizing: border-box;
+  border: 1px solid #69c6ba; border-radius: 10px; background: #102a32f5;
+  color: #edffff; z-index: 120; font: 13px/1.5 system-ui, sans-serif; text-align: center;
+}
+.server-status p { margin: 8px 0; }
+.server-status button { display: block; margin: 8px auto 0; padding: 7px 12px;
+  background: #274750; border: 1px solid #82b4bc; border-radius: 6px; color: white; cursor: pointer; }
+.server-status-error { border-color: #f2a274; }
+.server-telemetry { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; margin: 8px 0; color: #b6ebe3; font-variant-numeric: tabular-nums; }
+.server-status .server-ring-hint { color: #80ffc4; margin: 4px 0; }
+.server-flight .flight-competition-hud { left: 12px; right: 12px; transform: none; width: auto;
+  max-width: 570px; margin: auto; display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 6px; }
+.server-flight .flight-competition-hud div { min-width: 0; padding: 4px 6px; }
+.server-flight .flight-competition-hud button { padding: 9px 8px; font-size: 12px; }
+.server-flight .settings-toggle { top: 100px; right: 12px; }
+@media (max-width: 380px) {
+  .server-flight .flight-competition-hud { grid-template-columns: repeat(3, 1fr); }
+  .server-flight .flight-competition-hud button { grid-column: 1 / -1; }
+  .server-flight .settings-toggle { top: 138px; }
+}

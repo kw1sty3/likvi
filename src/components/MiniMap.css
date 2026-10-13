@@ -1,0 +1,39 @@
+.mini-map {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  font-family: 'Courier New', monospace;
+}
+
+.mini-map-header {
+  color: #00ff00;
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.mini-map-container {
+  position: relative;
+}
+
+.mini-map-info {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 10px;
+  color: #00ff00;
+}
+
+.mini-map-info div {
+  margin: 2px 0;
+}

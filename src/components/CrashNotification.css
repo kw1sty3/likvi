@@ -1,0 +1,126 @@
+.crash-notification {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: min(330px, calc(100vw - 36px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: crashIn 0.5s ease-out;
+  pointer-events: none;
+}
+
+.crash-notification.fade-out {
+  animation: crashOut 0.5s ease-in forwards;
+}
+
+@keyframes crashIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes crashOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.crash-content {
+  background: rgba(35, 22, 27, 0.94);
+  border: 1px solid #c26868;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.crash-icon {
+  display: none;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.crash-title {
+  font-size: 22px;
+  color: #ffd0cb;
+  margin: 0 0 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+  }
+  to {
+    text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000, 0 0 80px #ff0000;
+  }
+}
+
+.crash-message {
+  font-size: 18px;
+  color: #ffffff;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.crash-stats {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 8px;
+  margin: 10px 0;
+  color: #ffcccc;
+  font-size: 14px;
+}
+
+.crash-stats p {
+  margin: 5px 0;
+}
+
+.crash-reset-button {
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.crash-reset-button:hover {
+  background: linear-gradient(135deg, #ff3333, #ff0000);
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+}
+
+.crash-reset-button:active {
+  transform: scale(0.95);
+}

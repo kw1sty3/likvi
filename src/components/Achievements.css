@@ -1,0 +1,65 @@
+.achievement-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
+  border: 3px solid #ffd700;
+  border-radius: 15px;
+  padding: 20px;
+  z-index: 10001;
+  min-width: 300px;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.achievement-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.achievement-content {
+  text-align: center;
+  color: #000;
+}
+
+.achievement-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.achievement-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #8b4513;
+}
+
+.achievement-description {
+  font-size: 12px;
+  color: #666;
+}

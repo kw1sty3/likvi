@@ -1,0 +1,1071 @@
+.app,
+.race-mode {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.scene-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 210, 86, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(80, 160, 255, 0.22), transparent 35%),
+    linear-gradient(135deg, #07111f 0%, #112949 46%, #1e4678 100%);
+}
+
+.scene-loading-card {
+  padding: 18px 24px;
+  border-radius: 18px;
+  background: rgba(7, 17, 31, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+}
+
+.app-menu-actions {
+  position: absolute;
+  top: 16px;
+  right: 84px;
+  z-index: 1200;
+  display: flex;
+  gap: 10px;
+}
+
+.app-menu-button {
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 14px;
+  background: rgba(7, 17, 31, 0.76);
+  color: #ffffff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.app-menu-button.accent {
+  background: linear-gradient(135deg, rgba(255, 211, 77, 0.95), rgba(255, 145, 77, 0.96));
+  color: #0b1420;
+  border-color: transparent;
+}
+
+.race-mode {
+  background: #87ceeb;
+}
+
+.race-title-banner {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  padding: 14px 26px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  color: #ffffff;
+  font-size: clamp(1.8rem, 3.6vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.race-title-banner::after {
+  content: 'МОСКОВСКИЙ ПОЛИТЕХ';
+  display: block;
+  margin-top: 8px;
+  color: #ffd34d;
+  font-size: 0.92rem;
+  letter-spacing: 0.18em;
+}
+
+.race-split {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.race-panel {
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+
+.race-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.panel-label {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(7, 17, 31, 0.72);
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.race-ui-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(7, 17, 31, 0.84);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(10px);
+}
+
+.race-ui-toggle.open {
+  background: rgba(255, 211, 77, 0.18);
+  border-color: rgba(255, 211, 77, 0.4);
+}
+
+.race-ui {
+  position: fixed;
+  right: 18px;
+  bottom: 74px;
+  z-index: 20;
+  width: min(760px, calc(100% - 36px));
+}
+
+.race-toolbar,
+.race-timer,
+.player1,
+.player2 {
+  background: rgba(7, 17, 31, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+}
+
+.race-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 12px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+.race-back-button,
+.race-restart-button,
+.race-track-select,
+.race-help-button {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(14, 29, 51, 0.96);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.race-restart-button {
+  cursor: pointer;
+}
+
+.race-back-button {
+  cursor: pointer;
+}
+
+.race-help-button {
+  cursor: pointer;
+}
+
+.race-help-button.active {
+  border-color: rgba(255, 211, 77, 0.45);
+  background: rgba(255, 211, 77, 0.14);
+}
+
+.race-track-select {
+  min-width: 190px;
+  appearance: none;
+  flex: 1 1 220px;
+}
+
+.race-track-select option {
+  background: #0e1d33;
+  color: #f7fbff;
+}
+
+.race-timer {
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.race-timer h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: #ffd34d;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.timers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.timer {
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.player-label,
+.race-progress {
+  display: block;
+}
+
+.player-label {
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.time {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: #7ef7ac;
+}
+
+.race-progress {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.race-winner {
+  margin-top: 10px;
+  color: #ffd34d;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.player-info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.player1,
+.player2 {
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.player1 {
+  border-color: rgba(255, 79, 79, 0.4);
+}
+
+.player2 {
+  border-color: rgba(79, 124, 255, 0.4);
+}
+
+.player1 h3,
+.player2 h3 {
+  margin: 0 0 8px;
+  font-size: 0.96rem;
+}
+
+.player1 p,
+.player2 p {
+  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 980px) {
+  .race-split {
+    flex-direction: column;
+  }
+
+  .race-panel {
+    width: 100%;
+    height: 50%;
+  }
+
+  .race-ui {
+    right: 12px;
+    bottom: 62px;
+    width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 760px) {
+  .app-menu-actions {
+    top: 74px;
+    right: 14px;
+    left: 14px;
+    justify-content: stretch;
+  }
+
+  .app-menu-button {
+    flex: 1;
+  }
+
+  .race-toolbar {
+    align-items: stretch;
+  }
+
+  .timers,
+  .player-info {
+    grid-template-columns: 1fr;
+  }
+
+  .race-track-select {
+    width: 100%;
+  }
+
+  .race-ui-toggle {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+.olympiad-shell {
+  min-height: 100vh;
+  padding: 28px;
+  color: #eef7ff;
+  background:
+    linear-gradient(135deg, rgba(6, 18, 32, 0.96), rgba(16, 35, 42, 0.98)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 80px);
+}
+
+.olympiad-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 1440px;
+  margin: 0 auto 24px;
+}
+
+.olympiad-topbar h1,
+.dashboard-card h2,
+.mode-card h2,
+.olympiad-modal h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.olympiad-topbar h1 {
+  font-size: clamp(2rem, 4vw, 4.25rem);
+  line-height: 0.95;
+}
+
+.eyebrow,
+.card-label {
+  display: block;
+  margin: 0 0 8px;
+  color: #80ffc4;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.olympiad-topbar button,
+.dashboard-card button,
+.mode-card button,
+.olympiad-modal button,
+.flight-competition-hud button {
+  border: 1px solid rgba(238, 247, 255, 0.18);
+  border-radius: 8px;
+  padding: 11px 14px;
+  background: rgba(238, 247, 255, 0.08);
+  color: #eef7ff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.olympiad-topbar button:hover,
+.dashboard-card button:hover,
+.mode-card button:hover,
+.olympiad-modal button:hover,
+.flight-competition-hud button:hover {
+  border-color: rgba(128, 255, 196, 0.55);
+  background: rgba(128, 255, 196, 0.13);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.dashboard-card,
+.mode-card,
+.olympiad-modal {
+  border: 1px solid rgba(238, 247, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(9, 20, 31, 0.78);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.dashboard-card,
+.mode-card {
+  min-height: 220px;
+  padding: 22px;
+}
+
+.dashboard-card p,
+.mode-card p,
+.olympiad-modal p {
+  color: rgba(238, 247, 255, 0.72);
+  line-height: 1.55;
+}
+
+.selection-card button,
+.mode-card button:disabled,
+.placeholder-form button:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+
+.competition-card,
+.modes-card {
+  background: linear-gradient(135deg, rgba(128, 255, 196, 0.15), rgba(255, 211, 77, 0.12)), rgba(9, 20, 31, 0.86);
+}
+
+.modes-card {
+  background: linear-gradient(135deg, rgba(125, 183, 255, 0.15), rgba(128, 255, 196, 0.1)), rgba(9, 20, 31, 0.86);
+}
+
+.primary-action {
+  background: #80ffc4 !important;
+  color: #071421 !important;
+  border-color: transparent !important;
+}
+
+.leaderboard-card {
+  grid-column: 1 / -1;
+}
+
+.bracket-card,
+.events-card,
+.tournament-signup-card {
+  grid-column: 1 / -1;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.leaderboard-count {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 211, 77, 0.14);
+  color: #ffd34d;
+  font-weight: 800;
+}
+
+.empty-leaderboard {
+  margin: 18px 0 0;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  margin: 18px 0 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.leaderboard-list li {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(238, 247, 255, 0.06);
+}
+
+.leaderboard-list span {
+  color: #ffd34d;
+  font-weight: 800;
+}
+
+.leaderboard-list em {
+  color: #80ffc4;
+  font-style: normal;
+  font-family: monospace;
+}
+
+.bracket-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.bracket-round h3 {
+  margin: 0 0 10px;
+  color: #ffd34d;
+  font-size: 0.95rem;
+}
+
+.bracket-match {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid rgba(238, 247, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(238, 247, 255, 0.05);
+}
+
+.bracket-match.seeded {
+  border-color: rgba(128, 255, 196, 0.35);
+}
+
+.bracket-match.locked {
+  opacity: 0.55;
+}
+
+.bracket-match span {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(238, 247, 255, 0.82);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-list {
+  display: grid;
+  gap: 10px;
+  max-height: 320px;
+  margin: 18px 0 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.event-list li {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(238, 247, 255, 0.06);
+}
+
+.event-list span {
+  color: #80ffc4;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.event-list p {
+  margin: 0;
+}
+
+.tournament-badge {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 211, 77, 0.14);
+  color: #ffd34d;
+  font-weight: 800;
+}
+
+.tournament-badge.active {
+  background: rgba(128, 255, 196, 0.14);
+  color: #80ffc4;
+}
+
+.tournament-browser-shell {
+  min-height: 100vh;
+}
+
+.tournament-browser-main {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.tournament-window {
+  padding: 22px;
+  border: 1px solid rgba(238, 247, 255, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(128, 255, 196, 0.08), rgba(125, 183, 255, 0.06)),
+    rgba(9, 20, 31, 0.86);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.tournament-browser-main .bracket-card {
+  margin-top: 16px;
+}
+
+.tournament-browser-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.tournament-control-panel {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.tournament-panel-section {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(238, 247, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(238, 247, 255, 0.045);
+}
+
+.tournament-panel-section label {
+  display: grid;
+  gap: 7px;
+  color: rgba(238, 247, 255, 0.66);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tournament-panel-section input,
+.tournament-panel-section select {
+  min-width: 0;
+  border: 1px solid rgba(238, 247, 255, 0.14);
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: rgba(238, 247, 255, 0.07);
+  color: #eef7ff;
+  font: inherit;
+  text-transform: none;
+}
+
+.tournament-panel-section option {
+  background: #09141f;
+  color: #eef7ff;
+}
+
+.tournament-create-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.tournament-list-panel {
+  min-height: 430px;
+}
+
+.tournament-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tournament-card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-height: 160px;
+  width: 100%;
+  padding: 16px;
+  text-align: left;
+}
+
+.tournament-card.selected {
+  border-color: rgba(128, 255, 196, 0.55);
+  background: rgba(128, 255, 196, 0.1);
+}
+
+.tournament-card strong {
+  display: block;
+  color: #eef7ff;
+  font-size: 1.1rem;
+}
+
+.tournament-card span {
+  color: rgba(238, 247, 255, 0.66);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tournament-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.tournament-card dt {
+  color: rgba(238, 247, 255, 0.54);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.tournament-card dd {
+  margin: 4px 0 0;
+  color: #80ffc4;
+  font-weight: 800;
+}
+
+.tournament-empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 430px;
+  padding: 24px;
+  border: 1px dashed rgba(238, 247, 255, 0.18);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.tournament-empty-state h3 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+}
+
+.tournament-empty-state p {
+  margin: 0 auto;
+  max-width: 520px;
+  color: rgba(238, 247, 255, 0.7);
+}
+
+.mode-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1180px;
+  width: 100%;
+  margin: 10vh auto 0;
+}
+
+.disabled-mode {
+  opacity: 0.72;
+}
+
+.free-flight-card {
+  background: linear-gradient(135deg, rgba(125, 183, 255, 0.12), rgba(128, 255, 196, 0.08)), rgba(9, 20, 31, 0.86);
+}
+
+.matchmaking-card {
+  opacity: 1;
+}
+
+.matchmaking-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.matchmaking-status-grid div {
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(238, 247, 255, 0.06);
+}
+
+.matchmaking-status-grid span {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(238, 247, 255, 0.6);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.matchmaking-status-grid strong {
+  color: #80ffc4;
+}
+
+.matchmaking-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.olympiad-modal-backdrop,
+.countdown-overlay,
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.olympiad-modal {
+  width: min(420px, calc(100vw - 32px));
+  padding: 20px;
+}
+
+.olympiad-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.placeholder-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.placeholder-form input {
+  min-width: 0;
+  border: 1px solid rgba(238, 247, 255, 0.14);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(238, 247, 255, 0.07);
+  color: rgba(238, 247, 255, 0.72);
+}
+
+.flight-competition-hud {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(-50%);
+  padding: 10px;
+  border: 1px solid rgba(238, 247, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 20, 33, 0.82);
+  color: #eef7ff;
+  backdrop-filter: blur(10px);
+}
+
+.free-flight-actions {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 1400;
+  transform: translateX(-50%);
+  padding: 10px;
+  border: 1px solid rgba(238, 247, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 20, 33, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.free-flight-actions button {
+  border: 1px solid rgba(238, 247, 255, 0.18);
+  border-radius: 8px;
+  padding: 11px 14px;
+  background: rgba(238, 247, 255, 0.08);
+  color: #eef7ff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.free-flight-actions button:hover {
+  border-color: rgba(128, 255, 196, 0.55);
+  background: rgba(128, 255, 196, 0.13);
+}
+
+.flight-competition-hud div {
+  min-width: 92px;
+  padding: 4px 10px;
+  border-left: 1px solid rgba(238, 247, 255, 0.14);
+}
+
+.flight-competition-hud span {
+  display: block;
+  color: rgba(238, 247, 255, 0.62);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.flight-competition-hud strong {
+  color: #80ffc4;
+  font-family: monospace;
+  font-size: 1.05rem;
+}
+
+.countdown-overlay,
+.result-overlay {
+  flex-direction: column;
+  color: #eef7ff;
+  text-align: center;
+  pointer-events: none;
+}
+
+.countdown-overlay span,
+.result-overlay span {
+  color: #80ffc4;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.countdown-overlay strong {
+  font-size: clamp(6rem, 18vw, 14rem);
+  line-height: 0.9;
+}
+
+.result-overlay strong {
+  margin: 12px 0;
+  color: #ffd34d;
+  font-family: monospace;
+  font-size: clamp(3rem, 10vw, 8rem);
+}
+
+.result-overlay p {
+  max-width: 520px;
+  margin: 0;
+  color: rgba(238, 247, 255, 0.74);
+}
+
+.ring-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  z-index: 1400;
+  transform: translateX(-50%);
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(7, 20, 33, 0.8);
+  color: #80ffc4;
+  font-weight: 800;
+  backdrop-filter: blur(10px);
+}
+
+.notification-stack {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 4200;
+  display: grid;
+  gap: 10px;
+  width: min(360px, calc(100vw - 36px));
+  pointer-events: none;
+}
+
+.notification-item {
+  padding: 12px 14px;
+  border: 1px solid rgba(238, 247, 255, 0.14);
+  border-left: 4px solid #80ffc4;
+  border-radius: 8px;
+  background: rgba(7, 20, 33, 0.9);
+  color: #eef7ff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+}
+
+.notification-item.success {
+  border-left-color: #32ff7e;
+}
+
+.notification-item.warning {
+  border-left-color: #ffd34d;
+}
+
+.notification-item.network {
+  border-left-color: #7db7ff;
+}
+
+@media (max-width: 860px) {
+  .olympiad-shell {
+    padding: 18px;
+  }
+
+  .olympiad-topbar,
+  .dashboard-grid,
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .olympiad-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .auth-actions {
+    justify-content: flex-start;
+  }
+
+  .mode-grid {
+    margin-top: 24px;
+  }
+
+  .bracket-card,
+  .events-card {
+    grid-column: auto;
+  }
+
+  .bracket-grid,
+  .tournament-browser-layout,
+  .tournament-card-list,
+  .matchmaking-status-grid,
+  .event-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .tournament-create-grid {
+    justify-content: flex-start;
+  }
+
+  .tournament-card dl {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-competition-hud {
+    left: 12px;
+    right: 12px;
+    transform: none;
+    flex-wrap: wrap;
+  }
+}

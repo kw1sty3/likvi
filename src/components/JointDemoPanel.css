@@ -1,0 +1,30 @@
+.joint-demo-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(360px, calc(100vw - 32px));
+  padding: 14px;
+  box-sizing: border-box;
+  border: 1px solid #607782;
+  border-radius: 12px;
+  background: rgba(13, 25, 34, 0.94);
+  color: #edf5fa;
+  font-family: system-ui, sans-serif;
+  z-index: 100;
+}
+.joint-demo-panel h2 { font-size: 16px; margin: 0 0 10px; }
+.joint-demo-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.joint-demo-controls p { font-size: 12px; line-height: 1.6; margin: 0 0 8px; }
+.joint-demo-controls output { font-variant-numeric: tabular-nums; font-weight: 700; }
+.joint-orange { color: #ffd085; }
+.joint-blue { color: #77e2ef; }
+.joint-demo-panel button {
+  width: 100%; padding: 8px 6px; border: 1px solid #617c8d; border-radius: 6px;
+  background: #243d4b; color: #f4faff; cursor: pointer; font-size: 12px;
+}
+.joint-demo-panel button:hover { background: #35566a; }
+.joint-demo-panel button:focus-visible { outline: 2px solid #ffd085; outline-offset: 2px; }
+.joint-demo-panel button:disabled { opacity: 0.45; cursor: default; }
+.joint-demo-panel .joint-reset { background: transparent; }
+.joint-demo-hint { color: #b6c8d2; font-size: 11px; line-height: 1.5; margin: 10px 0; }
