@@ -15,7 +15,7 @@ from docx.oxml.ns import qn
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
 ASSETS = DOCS / 'report-assets'
-OUTPUT = DOCS / 'Отчет_Жердин_Руслан_Likvi.docx'
+OUTPUT = DOCS / 'report ivan.docx'
 ASSETS.mkdir(exist_ok=True)
 
 
