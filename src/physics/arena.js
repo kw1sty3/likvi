@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { MeshBVH } from 'three-mesh-bvh/src/core/MeshBVH.js'
 
 export const WORLD_HALF = 420
 const SAFE_RADIUS = 122
@@ -138,7 +139,46 @@ export function makeWorldData() {
     z: -330 + index * 18
   }))
 
-  return { buildings, bushes, cars, fields, markers, riverPath, roads, rocks, streetLights, trees }
+  return { buildings: placeBuildingsOnLand(buildings, riverPath), bushes, cars, fields, markers, riverPath, roads, rocks, streetLights, trees }
+}
+
+export function placeBuildingsOnLand(buildings, riverPath) {
+  const geometry = createRiverGeometry(riverPath)
+  geometry.rotateX(Math.PI / 2)
+  const water = new MeshBVH(geometry)
+  const transform = new THREE.Matrix4()
+  const lotBox = (building, margin = 0) => {
+    const halfWidth = building.size[0] / 2 + 4 + margin
+    const halfDepth = building.size[2] / 2 + 4 + margin
+    return new THREE.Box3(new THREE.Vector3(-halfWidth, -1, -halfDepth), new THREE.Vector3(halfWidth, 1, halfDepth))
+  }
+  const setTransform = (building, z = building.position[2]) => transform
+    .makeRotationY(building.rotation[1]).setPosition(building.position[0], 0, z)
+
+  try {
+    const wet = buildings.map(building => water.intersectsBox(lotBox(building, 3), setTransform(building)))
+    const occupied = buildings.filter((_, index) => !wet[index])
+      .map(building => lotBox(building).applyMatrix4(setTransform(building)))
+
+    return buildings.map((building, index) => {
+      if (!wet[index]) return building
+      const clearanceBox = lotBox(building, 3)
+      // Проверяем весь участок с отступом от воды; новые участки не должны пересекать соседние.
+      for (let distance = 2; distance <= WORLD_HALF * 2; distance += 2) {
+        for (const direction of [1, -1]) {
+          const z = building.position[2] + distance * direction
+          setTransform(building, z)
+          const bounds = lotBox(building).applyMatrix4(transform)
+          if (bounds.min.x < -WORLD_HALF || bounds.max.x > WORLD_HALF ||
+              bounds.min.z < -WORLD_HALF || bounds.max.z > WORLD_HALF ||
+              water.intersectsBox(clearanceBox, transform) || occupied.some(other => other.intersectsBox(bounds))) continue
+          occupied.push(bounds)
+          return { ...building, position: [building.position[0], building.position[1], z] }
+        }
+      }
+      throw new Error('Не удалось разместить дом на свободном сухом участке')
+    })
+  } finally { geometry.dispose() }
 }
 
 export function createRiverGeometry(path) {

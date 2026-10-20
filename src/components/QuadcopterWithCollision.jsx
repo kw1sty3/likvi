@@ -4,7 +4,7 @@ import Quadcopter from './Quadcopter'
 import { usePhysics } from '../hooks/usePhysics'
 import { DRONE_COLLIDERS, START_POSITION } from '../physics/dronePhysics'
 
-function QuadcopterWithCollision({ collisionWorldRef }) {
+function QuadcopterWithCollision({ collisionWorldRef, droneRef }) {
   const bodyRef = useRef()
   usePhysics(bodyRef, collisionWorldRef)
   return (
@@ -16,7 +16,7 @@ function QuadcopterWithCollision({ collisionWorldRef }) {
         return <Collider key={index} args={collider.args} position={collider.position}
           mass={collider.mass} friction={0.7} restitution={0.05} />
       })}
-      <Quadcopter />
+      <group ref={droneRef} name="drone-camera-anchor"><Quadcopter /></group>
     </RigidBody>
   )
 }

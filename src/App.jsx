@@ -61,7 +61,7 @@ function SceneAtmosphere() {
   )
 }
 
-function PhysicsWorld() {
+function PhysicsWorld({ droneRef }) {
   const jointDemoEnabled = useSimulatorStore(state => state.jointDemoEnabled)
   const serverMode = useSimulatorStore(state => state.competitionMode === 'server')
   const terrainRef = useRef()
@@ -70,11 +70,12 @@ function PhysicsWorld() {
     <EnhancedTerrain terrainRef={terrainRef} />
     {!serverMode && <CollisionDetector terrainRef={terrainRef} collisionWorldRef={collisionWorldRef} />}
     {jointDemoEnabled && <ArticulatedObstacles />}
-    {serverMode ? <ServerFlight /> : <QuadcopterWithCollision collisionWorldRef={collisionWorldRef} />}
+    {serverMode ? <ServerFlight droneRef={droneRef} /> : <QuadcopterWithCollision droneRef={droneRef} collisionWorldRef={collisionWorldRef} />}
   </>
 }
 
 function SimulatorScene() {
+  const droneRef = useRef()
   const physicsDebug = useSimulatorStore(state => state.physicsDebug)
   const jointDemoEnabled = useSimulatorStore(state => state.jointDemoEnabled)
   const serverMode = useSimulatorStore(state => state.competitionMode === 'server')
@@ -106,12 +107,12 @@ function SimulatorScene() {
         <SceneAtmosphere />
 
         <Physics gravity={[0, -9.81, 0]} timeStep={PHYSICS_STEP} interpolate paused={serverMode}
-          maxCcdSubsteps={4} numSolverIterations={8} debug={physicsDebug}>
-          <PhysicsWorld />
+          updatePriority={-2} maxCcdSubsteps={4} numSolverIterations={8} debug={physicsDebug}>
+          <PhysicsWorld droneRef={droneRef} />
         </Physics>
 
         <ChallengeRings />
-        <CameraController />
+        <CameraController droneRef={droneRef} />
         <Trajectory />
         <FlightStats />
         <SoundSystem />

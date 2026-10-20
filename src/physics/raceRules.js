@@ -1,4 +1,4 @@
-export const ARENA_VERSION = 'polytech-physics-v1'
+export const ARENA_VERSION = 'polytech-physics-v2'
 export const RACE_RINGS = [
   { id: 'ring-1', position: { x: 0, y: 5, z: -18 }, radius: 4, color: '#32ff7e' },
   { id: 'ring-2', position: { x: 12, y: 7, z: -40 }, radius: 4, color: '#32ff7e' },

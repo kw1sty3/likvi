@@ -7,7 +7,7 @@ import { useSimulatorStore } from '../store/useSimulatorStore'
 import { createServerFlightClient } from '../network/serverFlightClient'
 import { START_POSITION } from '../physics/dronePhysics'
 
-export default function ServerFlight() {
+export default function ServerFlight({ droneRef }) {
   const keys = useKeyboardControls()
   const group = useRef()
   const revision = useSimulatorStore(state => state.flightRevision)
@@ -42,6 +42,8 @@ export default function ServerFlight() {
     const alpha = Math.min(1, (performance.now() - d.at) / 50)
     group.current.position.lerpVectors(d.from, d.to, alpha)
     group.current.quaternion.slerpQuaternions(d.fromQ, d.toQ, alpha)
-  })
-  return <group ref={group} position={[START_POSITION.x, START_POSITION.y, START_POSITION.z]}><Quadcopter /></group>
+  }, -2)
+  return <group ref={group} position={[START_POSITION.x, START_POSITION.y, START_POSITION.z]}>
+    <group ref={droneRef} name="drone-camera-anchor"><Quadcopter /></group>
+  </group>
 }

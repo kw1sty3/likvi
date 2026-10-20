@@ -82,7 +82,7 @@ npm run dev
 | Метод и путь | Вход | Результат |
 | --- | --- | --- |
 | `GET /health` | — | Готовность, версия протокола и карты |
-| `POST /session` | `{"protocol":1,"arenaVersion":"polytech-physics-v1"}` | Секретный токен попытки и начальное состояние |
+| `POST /session` | `{"protocol":1,"arenaVersion":"polytech-physics-v2"}` | Секретный токен попытки и начальное состояние |
 | `POST /input` | `{"seq":1,"keys":["KeyQ","KeyW"]}` | Текущее серверное состояние |
 | `DELETE /session` | — | Закрытие своей попытки |
 | `GET /results` | — | До 100 сохранённых серверных результатов |
