@@ -93,3 +93,19 @@ test('free camera stays stationary and missing anchors are harmless', () => {
   close(camera.position, position)
   assert.ok(camera.quaternion.angleTo(orientation) < 1e-7)
 })
+
+test('assisted FPV keeps the course visible in a 60-degree bank and stays aligned with the rendered drone', () => {
+  for (const fps of [30, 60, 120]) {
+    const update = createDroneCamera({ stabilizeFpv: true }), camera = new PerspectiveCamera(), drone = new Group()
+    for (let frame = 0; frame <= fps; frame++) {
+      const pitch = -Math.PI / 3 * frame / fps
+      drone.position.set(12, 6, -frame)
+      drone.rotation.set(pitch, 0.7, 0, 'YXZ')
+      update(camera, drone, 'fps', false)
+      const actual = new Euler().setFromQuaternion(camera.quaternion, 'YXZ')
+      close(camera.position, drone.position.clone().add(new Vector3(0, 0.3, 0)))
+      assert.ok(Math.abs(actual.x) <= 0.41, 'camera must not point sixty degrees into the ground')
+      assert.ok(Math.abs(actual.y - 0.7) < 1e-8)
+    }
+  }
+})

@@ -13,10 +13,9 @@ const propellerPositions = [
 
 function Quadcopter() {
   const particleEffects = useSimulatorStore(state => state.particleEffects)
-  const throttle = useSimulatorStore(state => state.throttle)
   const isFlying = useSimulatorStore(state => state.isFlying)
-
-  const propellerSpeed = isFlying && throttle > 0 ? throttle * 20 + 5 : 0
+  const cameraMode = useSimulatorStore(state => state.cameraMode)
+  if (cameraMode === 'fps') return null
 
   return (
     <group userData={{ isQuadcopter: true }}>
@@ -99,15 +98,12 @@ function Quadcopter() {
 
           <Propeller
             position={[pos.x, 0.75, pos.z]}
-            speed={propellerSpeed * pos.rotation}
-            throttle={throttle}
+            direction={pos.rotation}
           />
 
           {particleEffects && isFlying && (
             <PropellerParticles
               position={[pos.x, 0.75, pos.z]}
-              speed={propellerSpeed}
-              throttle={throttle}
             />
           )}
         </group>

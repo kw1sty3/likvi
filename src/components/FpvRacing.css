@@ -1,0 +1,217 @@
+.track-picker { grid-column: 1 / -1; color: #edf5f5; margin-bottom: 8px; }
+.track-picker-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin: 2px 0 22px; }
+.track-picker-heading h2 { font-size: clamp(26px, 3vw, 42px); font-weight: 650; letter-spacing: -1.3px; margin-top: 10px; }
+.track-local-badge { font-size: 12px; color: #a4b8bc; padding-bottom: 4px; }
+.track-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+button.track-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; text-align: left; color: #edf5f5;
+  border: 1px solid #2e414a; border-radius: 14px; background: #14242e; cursor: pointer; transition: border-color .2s, background .2s; }
+button.track-card:hover { border-color: var(--track-accent); background: #1a2d37; }
+button.track-card.selected { border-color: var(--track-accent); box-shadow: 0 0 0 1px var(--track-accent); }
+.track-card:focus-visible, .track-picker button:focus-visible, .fpv-hud button:focus-visible { outline: 3px solid #f4e7a5; outline-offset: 4px; }
+.track-card-visual { position: relative; width: 100%; height: 184px; overflow: hidden; border-bottom: 1px solid #2e414a; }
+.track-plan { display: block; width: 100%; height: 100%; }
+.track-card-visual .track-plan { transform: rotate(-12deg) scale(1.12); opacity: .9; }
+.track-card-number { position: absolute; top: 15px; left: 17px; color: var(--track-accent); font: 500 34px monospace; letter-spacing: -2px; }
+.track-card-difficulty { position: absolute; right: 14px; top: 16px; font-size: 11px; letter-spacing: .4px; background: #14242edb; border: 1px solid #52636b; border-radius: 20px; padding: 5px 9px; }
+.track-card-body { padding: 21px 21px 16px; flex: 1; width: 100%; }
+.track-subtitle { color: var(--track-accent); font-size: 10px; letter-spacing: 2px; }
+.track-card h3 { font-size: 26px; margin: 8px 0 12px; font-weight: 650; letter-spacing: -.6px; }
+.track-card p { font-size: 13px; line-height: 1.65; color: #aebfc5; min-height: 85px; font-weight: 400; }
+.track-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0; }
+.track-tags span { padding: 5px 7px; font-size: 10px; border-radius: 4px; border: 1px solid #344954; color: #c5d3d7; }
+.track-card-meta { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: #aebfc5; border-top: 1px solid #30434c; padding-top: 14px; }
+.track-card-meta strong { font-family: monospace; font-size: 13px; color: #edf5f5; }
+.track-selected-mark { display: block; padding: 13px 21px; width: 100%; border-top: 1px solid #30434c; color: #a6b7bc; font-size: 12px; }
+.selected .track-selected-mark { color: var(--track-accent); background: #20343c; }
+.track-launch { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 22px; margin-top: 20px; background: #182c36; border: 1px solid #354a54; border-radius: 12px; }
+.track-launch > div { flex: 1; min-width: 240px; }
+.track-launch strong { font-size: 17px; }
+.track-launch p { color: #a9bdc4; font-size: 12px; line-height: 1.6; margin-top: 7px; max-width: 430px; }
+.track-launch label { display: flex; align-items: center; gap: 10px; color: #aec0c5; font-size: 12px; }
+.track-launch select { color: white; background: #101e28; border: 1px solid #47616b; border-radius: 7px; padding: 12px; font: inherit; }
+.track-picker button.track-free-button, .track-picker button.track-start-button, .fpv-hud button.track-start-button { border-radius: 7px; padding: 14px 18px; border: 1px solid #526973; cursor: pointer; font-size: 13px; font-weight: 650; color: #eef7f7; background: #243c46; }
+.track-picker button.track-start-button, .fpv-hud button.track-start-button { background: #b0f28e; border-color: #b0f28e; color: #12261c; }
+.track-picker button.track-start-button:hover, .fpv-hud button.track-start-button:hover { background: #c8ffac; }
+.track-picker button.track-demo-button { color: #95e4ff; border: 1px solid #649db9; border-radius: 7px; padding: 14px 18px; background: #193a48; cursor: pointer; font-size: 13px; font-weight: 600; }
+.track-picker button.track-demo-button:hover { background: #244e5f; border-color: #95e4ff; }
+.track-demo-description { color: #91b0be; font-size: 11px; margin-top: 12px; line-height: 1.7; }
+.fpv-demo-banner { position: absolute; top: 87px; left: 24px; width: 302px; padding: 12px; border: 1px solid #6cbbdd6b; border-radius: 9px; background: #102a39eb; display: flex; flex-wrap: wrap; gap: 10px; pointer-events: auto; }
+.fpv-demo-banner strong { color: #9ae5ff; font-size: 13px; font-weight: 600; }
+.fpv-demo-banner span { display: block; color: #bad0dc; font-size: 10px; line-height: 1.6; margin-top: 5px; }
+.fpv-demo-banner button { padding: 7px 10px; font-size: 11px; }
+.fpv-hud button.fpv-replay-demo { width: 100%; margin-top: 10px; font-size: 12px; color: #9ad6e7; background: none; border-color: transparent; }
+.fpv-hud button:disabled { cursor: default; opacity: .7; }
+.track-picker-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0 12px; font-size: 11px; color: #829ca6; }
+.track-picker-footer button { color: #c0d1d6; background: none; border: none; padding: 5px 0; cursor: pointer; font: inherit; text-decoration: underline; text-underline-offset: 4px; }
+.mode-shell > .track-picker { max-width: 1440px; margin: 0 auto 28px; }
+
+.fpv-hud { position: absolute; inset: 0; z-index: 50; pointer-events: none; color: #f0f8f6; font-size: 13px; font-variant-numeric: tabular-nums; }
+.fpv-hud button { pointer-events: auto; color: #e8f4f4; border: 1px solid #ffffff30; border-radius: 6px; padding: 10px 13px; background: #0b1a25dc; cursor: pointer; font: inherit; }
+.fpv-hud button:hover { border-color: #c0f7d3; background: #243e49; }
+.fpv-hud kbd { font: 10px monospace; border: 1px solid #ffffff40; padding: 2px 4px; border-radius: 3px; margin-left: 10px; opacity: .7; }
+.fpv-topbar { position: absolute; top: 20px; left: 24px; right: 24px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.fpv-track-title { text-align: center; text-shadow: 0 2px 10px #000c; }
+.fpv-track-title span { display: block; font-size: 9px; letter-spacing: 3px; color: var(--track-accent); margin-bottom: 4px; }
+.fpv-track-title strong { font-size: 19px; font-weight: 550; }
+.fpv-race-status { position: absolute; top: 88px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; gap: 28px; border: 1px solid #ffffff25; border-radius: 9px; background: #0a1925d9; padding: 15px 24px; text-align: center; }
+.fpv-race-status span { display: block; color: #9eb8c4; font-size: 8px; letter-spacing: 1.6px; margin-bottom: 6px; white-space: nowrap; }
+.fpv-race-status strong { font: 500 24px monospace; white-space: nowrap; }
+.fpv-race-status small { font-size: 13px; color: #9db3bc; }
+.fpv-race-status .fpv-main-time strong { font-size: 30px; color: #e4ffd4; }
+.fpv-target { position: absolute; top: 190px; left: 50%; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; background: #10252dc4; border-radius: 20px; padding: 9px 14px; white-space: nowrap; }
+.fpv-target span { color: #9ffad3; font-size: 12px; }
+.fpv-target strong { font: 12px monospace; }
+.fpv-target i { display: inline-block; font-style: normal; color: #9ffad3; }
+.fpv-reticle { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; transform: translate(-50%, -50%); opacity: .7; }
+.fpv-reticle i { position: absolute; display: block; background: #f5fff1; box-shadow: 0 1px 3px #0008; }
+.fpv-reticle i:first-child { top: 9px; left: 5px; width: 10px; height: 1px; }
+.fpv-reticle i:last-child { top: 5px; left: 9px; width: 1px; height: 10px; }
+.fpv-telemetry { position: absolute; left: 24px; bottom: 88px; display: flex; gap: 25px; padding: 14px 20px; border-radius: 8px; border: 1px solid #ffffff24; background: #0b1a25d9; }
+.fpv-telemetry strong { font: 26px monospace; display: block; }
+.fpv-telemetry small { font-size: 13px; }
+.fpv-telemetry span { display: block; font-size: 10px; color: #adc3cc; margin-top: 4px; }
+.fpv-map { position: absolute; bottom: 88px; right: 24px; width: 175px; border: 1px solid #ffffff30; border-radius: 9px; overflow: hidden; background: #0b1a25ed; }
+.fpv-map .track-plan { height: 160px; padding: 8px; }
+.fpv-map > span { display: block; padding: 9px; font-size: 10px; border-top: 1px solid #ffffff20; color: #c7d8d9; text-align: center; }
+.fpv-bottom-bar { position: absolute; bottom: 20px; left: 24px; right: 24px; display: flex; gap: 15px; align-items: center; justify-content: space-between; }
+.fpv-bottom-bar > span { font-size: 11px; text-shadow: 0 1px 6px #000; color: #e4eef0; background: #0b1a25b8; padding: 10px; border-radius: 5px; }
+.fpv-bottom-bar > div { display: flex; gap: 8px; }
+.fpv-last-lap { position: absolute; left: 24px; bottom: 430px; padding: 8px 12px; font: 12px monospace; background: #0b1a25d9; border-radius: 6px; }
+.fpv-countdown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #0c18233b; text-shadow: 0 2px 10px #000a; }
+.fpv-countdown > span { letter-spacing: 4px; font-size: 11px; color: #baf5a4; }
+.fpv-countdown > strong { font: 500 clamp(80px, 14vh, 140px) monospace; }
+.fpv-countdown > p { text-align: center; line-height: 1.8; font-size: 12px; color: #e3f1f3; max-width: 360px; background: #0b1a25b8; padding: 12px 18px; border-radius: 7px; }
+.fpv-finish { position: absolute; inset: 0; display: grid; place-items: center; background: #07131edb; backdrop-filter: blur(10px); pointer-events: auto; padding: 20px; overflow-y: auto; }
+.fpv-finish > div { width: min(100%, 440px); padding: 30px; border-radius: 15px; background: #152a35; border: 1px solid #a7ec865c; }
+.fpv-finish h2 { font-size: 30px; margin: 12px 0 16px; letter-spacing: -.8px; }
+.fpv-finish-time { font: 44px monospace; color: #b0f28e; }
+.fpv-finish p { font-size: 12px; line-height: 1.6; margin-top: 10px; color: #afc2cb; }
+.fpv-finish ol { list-style: none; padding: 0; margin: 22px 0; display: grid; gap: 9px; }
+.fpv-finish li { display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px solid #ffffff17; padding-bottom: 9px; }
+.fpv-finish li strong { font-family: monospace; }
+.fpv-finish .fpv-record-note { font-size: 11px; }
+.fpv-finish-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; }
+.app.fpv-flight .settings-toggle { top: 77px; right: 24px; padding: 8px; font-size: 17px; width: 35px; height: 35px; }
+.app.fpv-flight .settings-panel { z-index: 1500; }
+
+.fpv-instruments { position: absolute; bottom: 80px; left: 24px; width: 342px; border: 1px solid #7ba7b559; border-radius: 12px; background: #0b1a25f0; box-shadow: 0 6px 24px #0003; overflow: hidden; }
+.fpv-flight-readouts { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 14px 16px; gap: 12px; background: #152c36; }
+.fpv-flight-readouts strong { display: block; font: 24px monospace; color: #f4fbf5; white-space: nowrap; }
+.fpv-flight-readouts small { font: 10px sans-serif; color: #b2c8ce; }
+.fpv-flight-readouts span { display: block; margin-top: 5px; color: #b2c8ce; font-size: 10px; }
+.fpv-throttle-instrument { padding: 10px 16px 12px; border-bottom: 1px solid #ffffff1c; }
+.fpv-throttle-title { display: flex; align-items: center; justify-content: space-between; }
+.fpv-throttle-title > span { color: #d4e6ea; letter-spacing: 1px; font-size: 11px; }
+.fpv-throttle-title strong { font: 32px monospace; color: #b6f794; }
+.fpv-throttle-title small { font-size: 17px; }
+.fpv-instruments kbd { display: inline-block; font: 9px sans-serif; margin: 0 0 0 7px; padding: 3px 4px; color: #d8e5e8; opacity: 1; letter-spacing: 0; }
+.fpv-throttle-track { position: relative; height: 14px; margin: 5px 0 8px; background: repeating-linear-gradient(to right, transparent 0, transparent calc(10% - 1px), #72919d55 calc(10% - 1px), #72919d55 10%), #1c3440; border-radius: 3px; }
+.fpv-throttle-track > i { display: block; height: 100%; border-radius: 3px; background: #a8ee86; box-shadow: 0 0 12px #a8ee8620; }
+.fpv-throttle-track > b { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #f6f9e5; box-shadow: 0 0 3px #000; }
+.fpv-throttle-caption { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #a5c1ca; font-size: 10px; }
+.fpv-hud .fpv-throttle-caption button { background: none; border: none; padding: 0; font-size: 10px; color: #e0f6d1; }
+.fpv-control-instruments { display: grid; grid-template-columns: 102px 1fr; gap: 13px; padding: 13px 16px 10px; }
+.fpv-stick { align-self: center; }
+.fpv-stick svg { display: block; width: 100%; }
+.fpv-stick text { fill: #b9d0d6; font: 9px sans-serif; }
+.fpv-stick > span { display: block; margin-top: 6px; text-align: center; color: #a5c1ca; font-size: 8px; letter-spacing: .7px; }
+.fpv-input-axes { display: grid; gap: 10px; }
+.fpv-input-axis > div:first-child { display: flex; justify-content: space-between; gap: 5px; font-size: 10px; color: #b8cdd4; }
+.fpv-input-axis strong { color: #edf7f6; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.fpv-axis-track { position: relative; height: 6px; border-radius: 2px; background: #2a414d; margin: 5px 0 3px; }
+.fpv-axis-track i { position: absolute; top: 0; bottom: 0; background: #84d9ff; }
+.fpv-axis-track b { position: absolute; width: 1px; background: #b9d0d6; top: -2px; bottom: -2px; left: 50%; }
+.fpv-axis-keys { font-size: 9px; color: #91adb8; }
+.fpv-brake-status { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; border-top: 1px solid #ffffff1c; color: #a8c2cb; font-size: 9px; }
+.fpv-brake-status.active { color: #14251b; background: #b6f794; }
+.fpv-brake-status.active kbd { color: #14251b; border-color: #14251b66; }
+
+@media (max-width: 1000px) {
+  .fpv-demo-banner { width: 240px; }
+  .track-cards { gap: 10px; }
+  .track-card-body { padding: 16px; }
+  .track-card p { min-height: 130px; }
+  .track-card-meta { flex-wrap: wrap; }
+  .track-local-badge { max-width: 160px; line-height: 1.6; }
+}
+@media (max-width: 700px) {
+  .fpv-demo-banner { top: 226px; left: 12px; width: min(260px, calc(100vw - 24px)); padding: 8px 10px; gap: 6px; }
+  .fpv-demo-banner strong { font-size: 11px; }
+  .fpv-demo-banner span { font-size: 9px; }
+  .track-picker-heading { display: block; }
+  .track-local-badge { display: block; margin-top: 10px; max-width: none; }
+  .track-cards { grid-template-columns: 1fr; gap: 16px; }
+  .track-card-visual { height: 160px; }
+  .track-card p { min-height: 0; }
+  .track-tags { margin: 12px 0; }
+  .track-launch { gap: 12px; padding: 16px; }
+  .track-launch > div { flex-basis: 100%; min-width: 0; }
+  .track-launch label { flex-basis: 100%; justify-content: space-between; }
+  .track-launch > button { flex: 1; }
+  .track-picker-footer { line-height: 1.8; }
+  .fpv-topbar { top: 12px; left: 12px; right: 12px; gap: 8px; }
+  .fpv-hud button { padding: 9px; font-size: 11px; }
+  .fpv-hud kbd { display: none; }
+  .fpv-track-title strong { font-size: 14px; }
+  .fpv-track-title span { font-size: 7px; letter-spacing: 2px; }
+  .fpv-race-status { top: 70px; gap: 16px; padding: 10px 16px; }
+  .fpv-race-status strong { font-size: 20px; }
+  .fpv-race-status .fpv-main-time strong { font-size: 25px; }
+  .fpv-target { top: 155px; }
+  .fpv-target span { font-size: 10px; }
+  .fpv-telemetry { left: 12px; bottom: 74px; padding: 10px 12px; gap: 16px; }
+  .fpv-telemetry strong { font-size: 20px; }
+  .fpv-telemetry span { font-size: 8px; }
+  .fpv-map { right: 12px; bottom: 74px; width: 110px; }
+  .fpv-map .track-plan { height: 96px; }
+  .fpv-map > span { font-size: 8px; padding: 6px 3px; }
+  .fpv-bottom-bar { left: 12px; right: 12px; bottom: 12px; align-items: end; gap: 6px; }
+  .fpv-bottom-bar > span { max-width: 155px; font-size: 9px; line-height: 1.6; padding: 5px; }
+  .fpv-bottom-bar > div { gap: 5px; }
+  .fpv-last-lap { left: 12px; bottom: 380px; font-size: 10px; }
+  .fpv-instruments { left: 12px; bottom: 74px; width: min(292px, calc(100vw - 24px)); }
+  .fpv-flight-readouts { padding: 10px 12px; gap: 8px; }
+  .fpv-flight-readouts strong { font-size: 20px; }
+  .fpv-flight-readouts small { font-size: 8px; }
+  .fpv-flight-readouts span { font-size: 8px; }
+  .fpv-throttle-instrument { padding: 7px 12px 10px; }
+  .fpv-throttle-title strong { font-size: 26px; }
+  .fpv-control-instruments { grid-template-columns: 78px 1fr; padding: 10px 12px; gap: 10px; }
+  .fpv-input-axes { gap: 6px; }
+  .fpv-map { bottom: 390px; width: 90px; }
+  .fpv-map .track-plan { height: 85px; }
+  .fpv-map > span { font-size: 7px; }
+  .fpv-input-axis > div:first-child { font-size: 8px; }
+  .fpv-input-axis strong { font-size: 9px; }
+  .fpv-hud .fpv-instruments kbd { display: inline-block; }
+  .fpv-hud.is-demo .fpv-instruments { width: 236px; }
+  .fpv-hud.is-demo .fpv-control-instruments { grid-template-columns: 1fr; padding: 8px 12px; }
+  .fpv-hud.is-demo .fpv-stick { display: none; }
+  .fpv-hud.is-demo .fpv-throttle-title strong { font-size: 22px; }
+  .fpv-hud.is-demo .fpv-throttle-track { height: 10px; }
+  .fpv-hud.is-demo .fpv-throttle-caption, .fpv-hud.is-demo .fpv-throttle-caption button { font-size: 8px; }
+  .fpv-hud.is-demo .fpv-input-axis > div:first-child { line-height: 1.2; }
+  .fpv-hud.is-demo .fpv-axis-track { height: 4px; margin: 4px 0 2px; }
+  .fpv-hud.is-demo .fpv-axis-keys { font-size: 8px; line-height: 1.2; }
+  .fpv-hud.is-demo .fpv-input-axis:last-child .fpv-axis-keys { display: none; }
+  .fpv-countdown > p { max-width: 290px; font-size: 10px; }
+  .app.fpv-flight .settings-toggle { top: 65px; right: 12px; }
+}
+@media (max-height: 540px) and (min-width: 701px) {
+  .fpv-demo-banner { left: auto; right: 24px; top: 135px; width: 220px; }
+  .fpv-race-status { top: 75px; padding: 8px 15px; }
+  .fpv-target { top: 151px; }
+  .fpv-map { width: 130px; bottom: 65px; }
+  .fpv-map .track-plan { height: 95px; }
+  .fpv-telemetry { bottom: 65px; }
+  .fpv-countdown > strong { font-size: 65px; }
+  .fpv-instruments { width: 300px; bottom: 65px; }
+  .fpv-control-instruments { grid-template-columns: 65px 1fr; padding: 7px 12px; gap: 9px; }
+  .fpv-flight-readouts { padding: 6px 12px; }
+  .fpv-flight-readouts strong { font-size: 18px; }
+  .fpv-throttle-instrument { padding: 5px 12px; }
+  .fpv-throttle-title strong { font-size: 23px; }
+  .fpv-input-axes { gap: 5px; }
+  .fpv-last-lap { left: auto; right: 24px; bottom: 210px; }
+}
+@media (prefers-reduced-motion: reduce) { .track-card { transition: none !important; } }

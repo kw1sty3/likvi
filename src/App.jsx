@@ -25,15 +25,18 @@ import ArticulatedObstacles from './components/ArticulatedObstacles'
 import JointDemoPanel from './components/JointDemoPanel'
 import ServerFlight from './components/ServerFlight'
 import ServerStatus from './components/ServerStatus'
+import FpvTerrain from './components/FpvTerrain'
+import FpvRaceHUD from './components/FpvRaceHUD'
+import { getTrack, isFpvTrack } from './physics/fpvTracks'
 import { FlightOverlay, HomeScreen, ModeSelectScreen, TournamentBrowserScreen } from './components/OlympiadUI'
 import './App.css'
 
-function SceneAtmosphere() {
+function SceneAtmosphere({ atmosphere }) {
   return (
     <>
       <Sky
         distance={450000}
-        sunPosition={[80, 55, 30]}
+        sunPosition={atmosphere?.sun ?? [80, 55, 30]}
         inclination={0.48}
         azimuth={0.24}
         turbidity={5}
@@ -41,12 +44,13 @@ function SceneAtmosphere() {
         mieCoefficient={0.006}
         mieDirectionalG={0.78}
       />
-      <hemisphereLight args={['#dff4ff', '#6c8c5a', 0.75]} />
+      <hemisphereLight args={['#dff4ff', '#6c8c5a', atmosphere?.ambient ?? 0.75]} />
+      {atmosphere && <ambientLight intensity={0.16} color="#d4e3ed" />}
       <directionalLight
         castShadow
         position={[70, 120, 45]}
-        intensity={2.25}
-        color="#fff2d0"
+        intensity={atmosphere?.intensity ?? 2.25}
+        color={atmosphere?.sunColor ?? '#fff2d0'}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={1}
@@ -62,25 +66,30 @@ function SceneAtmosphere() {
 }
 
 function PhysicsWorld({ droneRef }) {
+  const selectedMapId = useSimulatorStore(state => state.selectedMapId)
   const jointDemoEnabled = useSimulatorStore(state => state.jointDemoEnabled)
   const serverMode = useSimulatorStore(state => state.competitionMode === 'server')
   const terrainRef = useRef()
   const collisionWorldRef = useRef()
   return <>
-    <EnhancedTerrain terrainRef={terrainRef} />
-    {!serverMode && <CollisionDetector terrainRef={terrainRef} collisionWorldRef={collisionWorldRef} />}
+    {isFpvTrack(selectedMapId) ? <FpvTerrain terrainRef={terrainRef} track={getTrack(selectedMapId)} /> : <EnhancedTerrain terrainRef={terrainRef} />}
+    {!serverMode && <CollisionDetector terrainRef={terrainRef} collisionWorldRef={collisionWorldRef}
+      track={isFpvTrack(selectedMapId) ? getTrack(selectedMapId) : null} />}
     {jointDemoEnabled && <ArticulatedObstacles />}
     {serverMode ? <ServerFlight droneRef={droneRef} /> : <QuadcopterWithCollision droneRef={droneRef} collisionWorldRef={collisionWorldRef} />}
   </>
 }
 
 function SimulatorScene() {
+  const selectedMapId = useSimulatorStore(state => state.selectedMapId)
+  const fpvMode = isFpvTrack(selectedMapId)
+  const track = getTrack(selectedMapId)
   const droneRef = useRef()
   const physicsDebug = useSimulatorStore(state => state.physicsDebug)
   const jointDemoEnabled = useSimulatorStore(state => state.jointDemoEnabled)
   const serverMode = useSimulatorStore(state => state.competitionMode === 'server')
   return (
-    <div className={`app${serverMode ? ' server-flight' : ''}`}>
+    <div className={`app${serverMode ? ' server-flight' : ''}${fpvMode ? ' fpv-flight' : ''}`}>
       <Canvas
         shadows
         dpr={[1, 1.5]}
@@ -101,17 +110,17 @@ function SimulatorScene() {
           camera.lookAt(0, 0, 0)
         }}
       >
-        <color attach="background" args={['#9fd8ff']} />
-        <fog attach="fog" args={['#bfe7ff', 130, 620]} />
+        <color attach="background" args={[track.sky ?? '#9fd8ff']} />
+        <fog attach="fog" args={[track.sky ?? '#bfe7ff', track.atmosphere?.fogNear ?? 130, 620]} />
 
-        <SceneAtmosphere />
+        <SceneAtmosphere atmosphere={track.atmosphere} />
 
         <Physics gravity={[0, -9.81, 0]} timeStep={PHYSICS_STEP} interpolate paused={serverMode}
           updatePriority={-2} maxCcdSubsteps={4} numSolverIterations={8} debug={physicsDebug}>
-          <PhysicsWorld droneRef={droneRef} />
+          <PhysicsWorld key={selectedMapId} droneRef={droneRef} />
         </Physics>
 
-        <ChallengeRings />
+        {!fpvMode && <ChallengeRings />}
         <CameraController droneRef={droneRef} />
         <Trajectory />
         <FlightStats />
@@ -120,13 +129,13 @@ function SimulatorScene() {
         <ImpactDecal />
       </Canvas>
 
-      {!serverMode && <HUD />}
+      {!serverMode && !fpvMode && <HUD />}
       <SettingsPanel />
-      {!jointDemoEnabled && !serverMode && <ControlsPanel />}
-      {!jointDemoEnabled && !serverMode && <MiniMap />}
+      {!jointDemoEnabled && !serverMode && !fpvMode && <ControlsPanel />}
+      {!jointDemoEnabled && !serverMode && !fpvMode && <MiniMap />}
       <CrashNotification />
-      <Achievements />
-      <FlightOverlay />
+      {!fpvMode && <Achievements />}
+      {fpvMode ? <FpvRaceHUD /> : <FlightOverlay />}
       <JointDemoPanel />
       <ServerStatus />
     </div>

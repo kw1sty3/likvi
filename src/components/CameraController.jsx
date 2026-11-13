@@ -4,13 +4,16 @@ import { OrbitControls } from '@react-three/drei'
 import { useSimulatorStore } from '../store/useSimulatorStore'
 import * as THREE from 'three'
 import { createDroneCamera } from '../camera/droneCamera'
+import { isFpvTrack } from '../physics/fpvTracks'
 
 function CameraController({ droneRef }) {
   const { camera, gl } = useThree()
   const orbitControlsRef = useRef()
   const [isShiftLocked, setIsShiftLocked] = useState(false)
   const cameraMode = useSimulatorStore(state => state.cameraMode)
-  const updateCamera = useMemo(createDroneCamera, [])
+  const stabilizeFpv = useSimulatorStore(state => isFpvTrack(state.selectedMapId))
+  const chaseHeading = useSimulatorStore(state => state.competitionMode === 'demo')
+  const updateCamera = useMemo(() => createDroneCamera({ stabilizeFpv, chaseHeading }), [stabilizeFpv, chaseHeading])
 
   useEffect(() => {
     const canvas = gl.domElement
@@ -41,8 +44,8 @@ function CameraController({ droneRef }) {
   }, [gl])
 
   // Physics/server interpolation runs at -2, then camera tracking, then OrbitControls at -1.
-  useFrame(() => {
-    updateCamera(camera, droneRef.current, cameraMode, isShiftLocked, orbitControlsRef.current)
+  useFrame((_, delta) => {
+    updateCamera(camera, droneRef.current, cameraMode, isShiftLocked, orbitControlsRef.current, delta)
   }, -1.5)
 
   if (cameraMode === 'fps' || cameraMode === 'follow') {

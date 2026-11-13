@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { useSimulatorStore } from '../store/useSimulatorStore'
+import { shallow } from 'zustand/shallow'
 import './SettingsPanel.css'
+import { FPV_HOVER_THROTTLE, HOVER_THROTTLE } from '../physics/dronePhysics'
+import { isFpvTrack } from '../physics/fpvTracks'
 
 function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false)
   const {
     cameraMode,
+    selectedMapId,
     showHUD,
     showTrajectory,
     particleEffects,
@@ -18,7 +22,11 @@ function SettingsPanel() {
     toggleSound,
     togglePhysicsDebug,
     resetFlight
-  } = useSimulatorStore()
+  } = useSimulatorStore(state => ({ cameraMode: state.cameraMode, selectedMapId: state.selectedMapId,
+    showHUD: state.showHUD, showTrajectory: state.showTrajectory, particleEffects: state.particleEffects,
+    soundEnabled: state.soundEnabled, physicsDebug: state.physicsDebug, setCameraMode: state.setCameraMode,
+    toggleHUD: state.toggleHUD, toggleTrajectory: state.toggleTrajectory, toggleParticles: state.toggleParticles,
+    toggleSound: state.toggleSound, togglePhysicsDebug: state.togglePhysicsDebug, resetFlight: state.resetFlight }), shallow)
   
   if (!isOpen) {
     return (
@@ -101,7 +109,8 @@ function SettingsPanel() {
             <input type="checkbox" checked={physicsDebug} onChange={togglePhysicsDebug} />
             Показать физические коллайдеры
           </label>
-          <div style={{ fontSize: 12, opacity: 0.7 }}>Зависание без наклона: газ около 36%.</div>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>Газ для зависания: около {Math.round((isFpvTrack(selectedMapId) ? FPV_HOVER_THROTTLE : HOVER_THROTTLE) * 100)}%.
+            {isFpvTrack(selectedMapId) && ' H — выставить этот газ; пробел — тормоз. В наклоне включена помощь газу.'}</div>
         </div>
 
         <div className="setting-group">

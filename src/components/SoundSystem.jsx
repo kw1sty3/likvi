@@ -1,105 +1,62 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useSimulatorStore } from '../store/useSimulatorStore'
 
-// Система звуковых эффектов через Web Audio API
 function SoundSystem() {
-  const audioContextRef = useRef(null)
-  const engineOscillatorRef = useRef(null)
-  const gainNodeRef = useRef(null)
-  const { throttle, speed, isCrash, soundEnabled } = useSimulatorStore()
-  
+  const engineRef = useRef(null)
+  const crashPlayed = useRef(false)
+  const soundEnabled = useSimulatorStore(state => state.soundEnabled)
+
   useEffect(() => {
     if (!soundEnabled) return
-    
-    // Инициализация Web Audio API
+    let context, oscillator, gain
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext
-      audioContextRef.current = new AudioContext()
-      
-      // Создаем gain node для управления громкостью
-      gainNodeRef.current = audioContextRef.current.createGain()
-      gainNodeRef.current.connect(audioContextRef.current.destination)
-      
-      // Создаем осциллятор для звука двигателя
-      const oscillator = audioContextRef.current.createOscillator()
-      const gain = audioContextRef.current.createGain()
-      
+      context = new AudioContext()
+      oscillator = context.createOscillator()
+      gain = context.createGain()
       oscillator.type = 'sawtooth'
-      oscillator.frequency.setValueAtTime(100, audioContextRef.current.currentTime)
-      
-      gain.gain.setValueAtTime(0, audioContextRef.current.currentTime)
-      
+      oscillator.frequency.setValueAtTime(100, context.currentTime)
+      gain.gain.setValueAtTime(0, context.currentTime)
       oscillator.connect(gain)
-      gain.connect(gainNodeRef.current)
-      
+      gain.connect(context.destination)
       oscillator.start()
-      engineOscillatorRef.current = { oscillator, gain }
+      engineRef.current = { context, oscillator, gain }
+      crashPlayed.current = false
     } catch (error) {
-      console.warn('Web Audio API не поддерживается', error)
+      console.warn('Web Audio API недоступен', error)
     }
-    
     return () => {
-      if (engineOscillatorRef.current) {
-        engineOscillatorRef.current.oscillator.stop()
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close()
-      }
+      engineRef.current = null
+      oscillator?.stop()
+      oscillator?.disconnect()
+      gain?.disconnect()
+      if (context && context.state !== 'closed') void context.close()
     }
   }, [soundEnabled])
-  
+
   useFrame(() => {
-    if (!soundEnabled || !engineOscillatorRef.current || !audioContextRef.current) return
-    
-    const { oscillator, gain } = engineOscillatorRef.current
-    const currentTime = audioContextRef.current.currentTime
-    
-    // Частота звука зависит от газа (throttle)
-    const baseFreq = 100
-    const throttleFreq = baseFreq + (throttle * 200) // 100-300 Hz
-    oscillator.frequency.setValueAtTime(throttleFreq, currentTime)
-    
-    // Громкость зависит от газа и скорости
-    const volume = throttle * 0.3 + (speed / 100) * 0.1
-    gain.gain.setValueAtTime(Math.max(0, Math.min(0.5, volume)), currentTime)
-    
-    // Звук крушения
-    if (isCrash && !crashPlayed) {
-      playCrashSound()
-      crashPlayed = true
-    } else if (!isCrash) {
-      crashPlayed = false
-    }
+    const engine = engineRef.current
+    if (!engine) return
+    const { throttle, speed, isCrash } = useSimulatorStore.getState()
+    const { context, oscillator, gain } = engine, now = context.currentTime
+    oscillator.frequency.setValueAtTime(100 + throttle * 200, now)
+    gain.gain.setValueAtTime(Math.max(0, Math.min(0.5, throttle * 0.3 + speed / 1000)), now)
+    if (!isCrash) { crashPlayed.current = false; return }
+    if (crashPlayed.current) return
+    crashPlayed.current = true
+    const crash = context.createOscillator(), volume = context.createGain()
+    crash.type = 'sawtooth'
+    crash.frequency.setValueAtTime(50, now)
+    crash.frequency.exponentialRampToValueAtTime(20, now + 0.3)
+    volume.gain.setValueAtTime(0.5, now)
+    volume.gain.exponentialRampToValueAtTime(0.01, now + 0.3)
+    crash.connect(volume)
+    volume.connect(context.destination)
+    crash.onended = () => { crash.disconnect(); volume.disconnect() }
+    crash.start()
+    crash.stop(now + 0.3)
   })
-  
-  let crashPlayed = false
-  
-  const playCrashSound = () => {
-    if (!audioContextRef.current) return
-    
-    try {
-      // Создаем короткий звук крушения
-      const oscillator = audioContextRef.current.createOscillator()
-      const gain = audioContextRef.current.createGain()
-      
-      oscillator.type = 'sawtooth'
-      oscillator.frequency.setValueAtTime(50, audioContextRef.current.currentTime)
-      oscillator.frequency.exponentialRampToValueAtTime(20, audioContextRef.current.currentTime + 0.3)
-      
-      gain.gain.setValueAtTime(0.5, audioContextRef.current.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.3)
-      
-      oscillator.connect(gain)
-      gain.connect(audioContextRef.current.destination)
-      
-      oscillator.start()
-      oscillator.stop(audioContextRef.current.currentTime + 0.3)
-    } catch (error) {
-      console.warn('Ошибка воспроизведения звука крушения', error)
-    }
-  }
-  
   return null
 }
 

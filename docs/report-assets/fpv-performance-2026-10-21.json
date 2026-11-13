@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-21",
+  "viewport": [
+    1440,
+    900
+  ],
+  "deviceScaleFactor": 1,
+  "mode": "Vite dev, demo follow camera",
+  "sampleMs": 6000,
+  "warmupMs": 6500,
+  "timing": "requestAnimationFrame interval in milliseconds; gl.info sampled once per frame",
+  "before": {
+    "results": [
+      {
+        "id": "construction",
+        "frames": 40,
+        "p50": 83.3,
+        "p95": 733,
+        "max": 816.3,
+        "over33": 39,
+        "drawCalls": 216,
+        "geometries": 263,
+        "storeUpdates": 509,
+        "status": "running"
+      },
+      {
+        "id": "tunnels",
+        "frames": 62,
+        "p50": 66.7,
+        "p95": 466.5,
+        "max": 682.9,
+        "over33": 56,
+        "drawCalls": 228,
+        "geometries": 267,
+        "storeUpdates": 608,
+        "status": "running"
+      },
+      {
+        "id": "stadium",
+        "frames": 134,
+        "p50": 33.3,
+        "p95": 133.2,
+        "max": 233.2,
+        "over33": 53,
+        "drawCalls": 134,
+        "geometries": 239,
+        "storeUpdates": 707,
+        "status": "running"
+      }
+    ]
+  },
+  "after": {
+    "results": [
+      {
+        "id": "construction",
+        "frames": 146,
+        "p50": 33.600000000000364,
+        "p95": 50.600000000000364,
+        "max": 83.5,
+        "over33": 94,
+        "drawCalls": 117,
+        "geometries": 138,
+        "storeUpdates": 651,
+        "status": "running"
+      },
+      {
+        "id": "tunnels",
+        "frames": 188,
+        "p50": 33.29999999999927,
+        "p95": 50.20000000000073,
+        "max": 83.30000000000291,
+        "over33": 66,
+        "drawCalls": 127,
+        "geometries": 159,
+        "storeUpdates": 661,
+        "status": "running"
+      },
+      {
+        "id": "stadium",
+        "frames": 251,
+        "p50": 16.80000000000291,
+        "p95": 33.599999999998545,
+        "max": 83.5,
+        "over33": 44,
+        "drawCalls": 100,
+        "geometries": 157,
+        "storeUpdates": 660,
+        "status": "running"
+      }
+    ],
+    "errors": []
+  }
+}

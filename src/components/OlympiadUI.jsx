@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
 import { useSimulatorStore } from '../store/useSimulatorStore'
+import TrackPicker from './TrackPicker'
 
 const formatTime = (ms) => {
   const totalSeconds = ms / 1000
@@ -367,7 +368,7 @@ export function HomeScreen() {
       <header className="olympiad-topbar">
         <div>
           <p className="eyebrow">Likvi</p>
-          <h1>Виртуальная олимпиада</h1>
+          <h1>FPV · Полёт и гонки</h1>
         </div>
         <div className="auth-actions">
           <button type="button" onClick={() => openAuthModal('login')}>Вход</button>
@@ -376,6 +377,7 @@ export function HomeScreen() {
       </header>
 
       <main className="dashboard-grid">
+        <TrackPicker />
         <section className="dashboard-card selection-card">
           <span className="card-label">Выбранный дрон</span>
           <h2>Учебный квадрокоптер</h2>
@@ -384,10 +386,10 @@ export function HomeScreen() {
         </section>
 
         <section className="dashboard-card selection-card">
-          <span className="card-label">Выбранная карта</span>
+          <span className="card-label">Классическая карта</span>
           <h2>Арена Московского Политеха</h2>
           <p>Маршрут с последовательными контрольными кольцами.</p>
-          <button type="button" disabled>Выбрана</button>
+          <p>Доступна через ссылку «Классическая арена» под новыми трассами.</p>
         </section>
 
         <section className="dashboard-card competition-card">
@@ -526,11 +528,12 @@ export function ModeSelectScreen() {
         <button type="button" onClick={backFromModeSelect}>Назад</button>
       </header>
 
+      <TrackPicker />
       <main className="mode-grid">
         <section className="mode-card free-flight-card">
           <span className="card-label">Без соревнования</span>
           <h2>Свободный полет</h2>
-          <p>Обычный режим для тренировки управления дроном без колец, таймера, очков и турнирных условий.</p>
+          <p>Исследуйте выбранную карту без таймера. Ворота остаются ориентирами для тренировки.</p>
           <button type="button" className="primary-action" onClick={startFreeFlight}>
             Полетать
           </button>
@@ -540,7 +543,7 @@ export function ModeSelectScreen() {
         <section className="mode-card">
           <span className="card-label">Локальная тренировка</span>
           <h2>Одиночный полет</h2>
-          <p>Маршрут на время: зеленые кольца появляются по очереди, золотое кольцо завершает попытку.</p>
+          <p>Выбранная трасса на время. Пролетайте зелёные ворота по порядку и завершите все круги.</p>
           <button type="button" className="primary-action" onClick={startCountdown}>
             Запустить
           </button>
@@ -549,7 +552,7 @@ export function ModeSelectScreen() {
         <section className="mode-card">
           <span className="card-label">Серверная проверка</span>
           <h2>Зачётный заезд</h2>
-          <p>Сервер рассчитывает движение, столкновения, кольца и время. Подтверждённый результат сохраняется отдельно от тренировок.</p>
+          <p>Заезд на классической арене Московского Политеха. Сервер рассчитывает движение, столкновения, кольца и время.</p>
           <button type="button" className="primary-action" onClick={startServerRace}>Запустить серверный заезд</button>
         </section>
         <MatchmakingPanel />

@@ -1,7 +1,8 @@
 import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useSimulatorStore } from '../store/useSimulatorStore'
 
-function PropellerParticles({ position, speed, throttle }) {
+function PropellerParticles({ position }) {
   const particlesRef = useRef()
   
   const particles = useMemo(() => {
@@ -27,8 +28,12 @@ function PropellerParticles({ position, speed, throttle }) {
     return { positions, velocities }
   }, [])
   
-  useFrame((state, delta) => {
-    if (!particlesRef.current || throttle < 0.3) return
+  useFrame((_, delta) => {
+    if (!particlesRef.current) return
+    const { throttle, isFlying } = useSimulatorStore.getState()
+    particlesRef.current.visible = isFlying && throttle >= 0.3
+    if (!particlesRef.current.visible) return
+    const speed = throttle * 20 + 5
     
     const positions = particlesRef.current.geometry.attributes.position.array
     const velocities = particles.velocities
@@ -51,8 +56,6 @@ function PropellerParticles({ position, speed, throttle }) {
     
     particlesRef.current.geometry.attributes.position.needsUpdate = true
   })
-  
-  if (throttle < 0.3) return null
   
   return (
     <points ref={particlesRef} position={position}>

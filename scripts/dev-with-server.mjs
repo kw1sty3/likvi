@@ -1,8 +1,8 @@
 import { createServer } from 'vite'
-import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createPhysicsServer } from '../server/httpServer.js'
 
-const physics = await createPhysicsServer({ resultPath: resolve('server/data/results.json') })
+const physics = await createPhysicsServer({ resultPath: fileURLToPath(new URL('../server/data/results.json', import.meta.url)) })
 let vite
 try {
   await physics.listen(3003)

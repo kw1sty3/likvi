@@ -1,11 +1,22 @@
 import { create } from 'zustand'
-import { START_POSITION } from '../physics/dronePhysics.js'
+import { FPV_HOVER_THROTTLE, START_POSITION } from '../physics/dronePhysics.js'
 import { JOINT_DEMO_SPAWN } from '../physics/articulatedRig.js'
 import { RACE_RINGS, calculateScore } from '../physics/raceRules.js'
 import { Euler, Quaternion } from 'three'
 import { createImpactEvent } from '../physics/impactEffects.js'
+import { DEFAULT_TRACK_ID, FPV_TRACKS, getTrack, isFpvTrack, TRACK_VERSION } from '../physics/fpvTracks.js'
 
 const LEADERBOARD_KEY = 'likvi-leaderboard'
+// A new physics model has its own records; the v1 browser data stays intact.
+const FPV_RECORDS_KEY = 'likvi-fpv-records-v2'
+
+const loadFpvRecords = () => {
+  try {
+    const saved = typeof window !== 'undefined' && JSON.parse(window.localStorage.getItem(FPV_RECORDS_KEY) || '[]')
+    return Array.isArray(saved) ? saved.filter(item => isFpvTrack(item.trackId) && item.version === TRACK_VERSION &&
+      Number.isFinite(item.timeMs) && item.timeMs > 0 && [1, 3, 5].includes(item.laps)).slice(0, 300) : []
+  } catch { return [] }
+}
 
 const loadLeaderboard = () => {
   if (typeof window === 'undefined') return []
@@ -87,6 +98,8 @@ export const useSimulatorStore = create((set, get) => ({
   pitch: 0,
   roll: 0,
   yaw: 0,
+  brake: false,
+  autopilot: false,
 
   altitude: START_POSITION.y,
   speed: 0,
@@ -134,7 +147,13 @@ export const useSimulatorStore = create((set, get) => ({
   modeSelectBackTarget: 'home',
   authModal: null,
   selectedDroneId: 'training-drone',
-  selectedMapId: 'polytech-arena',
+  selectedMapId: DEFAULT_TRACK_ID,
+  raceLaps: 3,
+  currentLap: 1,
+  lapTimes: [],
+  lapStartedAtMs: 0,
+  fpvRecords: loadFpvRecords(),
+  showRaceGuide: true,
   competitionMode: null,
   competitionStatus: 'idle',
   countdown: 5,
@@ -142,7 +161,7 @@ export const useSimulatorStore = create((set, get) => ({
   raceElapsedMs: 0,
   resultVisibleUntil: null,
   activeRingIndex: 0,
-  rings: RACE_RINGS,
+  rings: getTrack(DEFAULT_TRACK_ID).gates,
   leaderboard: loadLeaderboard(),
   lastResult: null,
 
@@ -175,8 +194,14 @@ export const useSimulatorStore = create((set, get) => ({
   setSpeedMultiplier: (value) => set({ speedMultiplier: Math.max(0.2, Math.min(3, value)) }),
   startFlight: () => set({ awaitingStart: false, isFlying: true }),
   setStartPosition: (pos) => set({ startPosition: pos, gps: pos }),
+  selectMap: id => {
+    if (get().appScreen === 'flight' || ![...FPV_TRACKS.map(track => track.id), 'polytech-arena'].includes(id)) return
+    set({ selectedMapId: id, rings: getTrack(id).gates })
+  },
+  setRaceLaps: laps => { if (get().appScreen !== 'flight' && [1, 3, 5].includes(Number(laps))) set({ raceLaps: Number(laps) }) },
+  toggleRaceGuide: () => set(state => ({ showRaceGuide: !state.showRaceGuide })),
 
-  updateState: (state) => set((prev) => ({ ...prev, ...state })),
+  updateState: (state) => set(state),
 
   registerCrash: (impact) => {
     const state = get()
@@ -186,7 +211,7 @@ export const useSimulatorStore = create((set, get) => ({
     set({
       isCrash: true,
       isFlying: false,
-      throttle: 0, pitch: 0, roll: 0, yaw: 0,
+      throttle: 0, pitch: 0, roll: 0, yaw: 0, brake: false,
       crashInfo: createImpactEvent(impact, state.flightRevision),
       competitionStatus: failedRace ? 'crashed' : state.competitionStatus,
       raceElapsedMs: failedRace && state.raceStartedAt !== null ? getNow() - state.raceStartedAt : state.raceElapsedMs
@@ -199,13 +224,16 @@ export const useSimulatorStore = create((set, get) => ({
 
   resetFlight: () => set((state) => ({
     flightRevision: state.flightRevision + 1,
+    currentLap: 1,
+    lapTimes: [],
+    lapStartedAtMs: 0,
     crashInfo: null,
     serverTick: -1,
     serverError: null,
     jointKick: 0,
     jointGateOpen: false,
     jointTelemetry: { hingeAngle: 0, liftTravel: 0, anchorError: 0, lateralError: 0 },
-    ...(state.competitionMode === 'solo' ? {
+    ...(['solo', 'demo'].includes(state.competitionMode) ? {
       competitionStatus: 'countdown', countdown: 5, activeRingIndex: 0,
       raceStartedAt: null, raceElapsedMs: 0, lastResult: null, resultVisibleUntil: null
     } : {}),
@@ -213,7 +241,9 @@ export const useSimulatorStore = create((set, get) => ({
       competitionStatus: 'connecting', countdown: 5, activeRingIndex: 0,
       raceStartedAt: null, raceElapsedMs: 0, lastResult: null, resultVisibleUntil: null
     } : {}),
-    throttle: 0,
+    throttle: state.competitionMode === 'free' && isFpvTrack(state.selectedMapId) ? FPV_HOVER_THROTTLE : 0,
+    brake: false,
+    autopilot: false,
     pitch: 0,
     roll: 0,
     yaw: 0,
@@ -281,7 +311,9 @@ export const useSimulatorStore = create((set, get) => ({
   selectCompetitionMode: (mode) => set({ competitionMode: mode }),
 
   startFreeFlight: () => {
-    set({ startPosition: { ...START_POSITION }, jointDemoEnabled: false })
+    const track = getTrack(get().selectedMapId)
+    set({ startPosition: { ...track.spawn }, rings: track.gates, jointDemoEnabled: false,
+      ...(isFpvTrack(track.id) ? { cameraMode: 'fps' } : {}) })
     get().resetFlight()
     set({
       appScreen: 'flight',
@@ -294,12 +326,14 @@ export const useSimulatorStore = create((set, get) => ({
       resultVisibleUntil: null,
       lastResult: null,
       awaitingStart: false,
-      isFlying: true
+      isFlying: true,
+      throttle: isFpvTrack(track.id) ? FPV_HOVER_THROTTLE : 0
     })
     get().pushNotification('info', 'Свободный полет запущен.')
   },
 
   startJointDemo: () => {
+    set({ selectedMapId: 'polytech-arena', rings: RACE_RINGS })
     get().startFreeFlight()
     set({ jointDemoEnabled: true, startPosition: { ...JOINT_DEMO_SPAWN }, cameraMode: 'follow' })
     get().resetFlight()
@@ -307,7 +341,7 @@ export const useSimulatorStore = create((set, get) => ({
 
   startServerRace: () => {
     set({ appScreen: 'flight', competitionMode: 'server', jointDemoEnabled: false,
-      startPosition: { ...START_POSITION }, cameraMode: 'follow' })
+      startPosition: { ...START_POSITION }, cameraMode: 'follow', selectedMapId: 'polytech-arena', rings: RACE_RINGS })
     get().resetFlight()
   },
   serverFlightError: message => {
@@ -478,7 +512,9 @@ export const useSimulatorStore = create((set, get) => ({
   },
 
   startCountdown: () => {
-    set({ startPosition: { ...START_POSITION }, jointDemoEnabled: false })
+    const track = getTrack(get().selectedMapId)
+    set({ startPosition: { ...track.spawn }, rings: track.gates, jointDemoEnabled: false,
+      ...(isFpvTrack(track.id) ? { cameraMode: 'fps' } : {}) })
     get().resetFlight()
     set({
       appScreen: 'flight',
@@ -497,6 +533,21 @@ export const useSimulatorStore = create((set, get) => ({
     get().recordTournamentEvent('solo', 'Запущен одиночный квалификационный заезд.')
   },
 
+  startDemo: () => {
+    const track = getTrack(get().selectedMapId)
+    if (!isFpvTrack(track.id)) return
+    set({ competitionMode: 'demo', startPosition: { ...track.spawn }, rings: track.gates,
+      jointDemoEnabled: false, cameraMode: 'follow', appScreen: 'flight' })
+    get().resetFlight()
+  },
+
+  takeOverDemo: () => {
+    const state = get()
+    if (state.competitionMode !== 'demo' || state.competitionStatus === 'finished' || state.isCrash) return
+    set({ competitionMode: 'free', competitionStatus: 'idle', awaitingStart: false, isFlying: true, cameraMode: 'fps',
+      throttle: FPV_HOVER_THROTTLE, pitch: 0, roll: 0, yaw: 0, brake: false, autopilot: false })
+  },
+
   setCountdown: (countdown) => set({ countdown }),
 
   startRaceRun: () => {
@@ -513,8 +564,10 @@ export const useSimulatorStore = create((set, get) => ({
       raceStartedAt: getNow(),
       raceElapsedMs: 0,
       awaitingStart: false,
-      isFlying: true
+      isFlying: true,
+      ...(isFpvTrack(state.selectedMapId) ? { throttle: FPV_HOVER_THROTTLE } : {})
     })
+    if (state.competitionMode === 'demo') return
     get().pushNotification('success', 'Зачет времени начался.')
     get().recordTournamentEvent('solo', 'Зачет времени начался после обратного отсчета.')
   },
@@ -536,11 +589,19 @@ export const useSimulatorStore = create((set, get) => ({
 
     const nextIndex = state.activeRingIndex + 1
     if (nextIndex >= state.rings.length) {
+      if (isFpvTrack(state.selectedMapId) && state.competitionMode !== 'demo' && state.currentLap < state.raceLaps) {
+        const elapsed = getNow() - state.raceStartedAt
+        set({ currentLap: state.currentLap + 1, activeRingIndex: 0,
+          lapTimes: [...state.lapTimes, Math.round(elapsed - state.lapStartedAtMs)], lapStartedAtMs: elapsed })
+        state.pushNotification('success', `Круг ${state.currentLap} завершён. Следующий круг!`)
+        return
+      }
       state.finishRace()
       return
     }
 
     set({ activeRingIndex: nextIndex })
+    if (state.competitionMode === 'demo') return
     get().pushNotification('success', `Кольцо ${nextIndex} пройдено.`)
     get().recordTournamentEvent('checkpoint', `Засчитано кольцо ${nextIndex} из ${state.rings.length}.`)
   },
@@ -550,6 +611,38 @@ export const useSimulatorStore = create((set, get) => ({
     if (state.competitionMode === 'server') return
     if (state.competitionStatus !== 'running') {
       state.pushNotification('warning', 'Финиш отклонен: заезд не активен.')
+      return
+    }
+
+    if (state.competitionMode === 'demo') {
+      if (state.activeRingIndex !== state.rings.length - 1) return
+      const timeMs = Math.max(1, Math.round(getNow() - state.raceStartedAt))
+      set({ competitionStatus: 'finished', raceElapsedMs: timeMs, lapTimes: [timeMs],
+        lastResult: { demo: true, map: getTrack(state.selectedMapId).name, laps: 1, timeMs },
+        throttle: 0, pitch: 0, roll: 0, yaw: 0, brake: false, isFlying: false })
+      return
+    }
+    if (isFpvTrack(state.selectedMapId)) {
+      if (state.activeRingIndex !== state.rings.length - 1 || state.currentLap !== state.raceLaps) return
+      const timeMs = Math.max(1, Math.round(getNow() - state.raceStartedAt))
+      const entry = { id: `fpv-${Date.now()}`, trackId: state.selectedMapId, version: TRACK_VERSION,
+        map: getTrack(state.selectedMapId).name, laps: state.raceLaps, timeMs,
+        lapTimes: [...state.lapTimes, Math.max(1, Math.round(timeMs - state.lapStartedAtMs))], createdAt: new Date().toISOString() }
+      // Cap each comparable category separately so fast stadium runs cannot evict tunnel records.
+      const counts = new Map()
+      const fpvRecords = [...state.fpvRecords, entry].sort((a, b) => a.timeMs - b.timeMs).filter(item => {
+        const key = `${item.trackId}:${item.laps}`
+        const count = (counts.get(key) ?? 0) + 1
+        counts.set(key, count)
+        return count <= 30
+      })
+      let savedLocally = true
+      try {
+        if (typeof window !== 'undefined') window.localStorage.setItem(FPV_RECORDS_KEY, JSON.stringify(fpvRecords))
+      } catch { savedLocally = false }
+      set({ fpvRecords, lastResult: { ...entry, savedLocally }, raceElapsedMs: timeMs, competitionStatus: 'finished',
+        lapTimes: entry.lapTimes, throttle: 0, pitch: 0, roll: 0, yaw: 0, brake: false, isFlying: false })
+      state.pushNotification('success', 'Все круги пройдены. Финиш!')
       return
     }
 

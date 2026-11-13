@@ -3,8 +3,10 @@ import { CuboidCollider, CylinderCollider, RigidBody } from '@react-three/rapier
 import Quadcopter from './Quadcopter'
 import { usePhysics } from '../hooks/usePhysics'
 import { DRONE_COLLIDERS, START_POSITION } from '../physics/dronePhysics'
+import { useSimulatorStore } from '../store/useSimulatorStore'
 
 function QuadcopterWithCollision({ collisionWorldRef, droneRef }) {
+  const cameraMode = useSimulatorStore(state => state.cameraMode)
   const bodyRef = useRef()
   usePhysics(bodyRef, collisionWorldRef)
   return (
@@ -16,7 +18,7 @@ function QuadcopterWithCollision({ collisionWorldRef, droneRef }) {
         return <Collider key={index} args={collider.args} position={collider.position}
           mass={collider.mass} friction={0.7} restitution={0.05} />
       })}
-      <group ref={droneRef} name="drone-camera-anchor"><Quadcopter /></group>
+      <group ref={droneRef} name="drone-camera-anchor"><group visible={cameraMode !== 'fps'}><Quadcopter /></group></group>
     </RigidBody>
   )
 }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 const CONTROL_KEYS = new Set(['KeyQ', 'KeyE', 'KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'])
 
-export function useKeyboardControls() {
+export function useKeyboardControls({ fpv = false } = {}) {
   const pressed = useRef({})
   const taps = useRef({})
   // Network packets are less frequent than keyboard events. Preserve a short
@@ -16,7 +16,7 @@ export function useKeyboardControls() {
     const clear = () => { pressed.current = {}; taps.current = {} }
     const down = event => {
       if (event.target?.closest?.('input, textarea, select, [contenteditable="true"]')) return
-      if (!CONTROL_KEYS.has(event.code)) return
+      if (!CONTROL_KEYS.has(event.code) && !(fpv && ['Space', 'KeyH'].includes(event.code))) return
       event.preventDefault()
       pressed.current[event.code] = true
       taps.current[event.code] = true
@@ -34,6 +34,6 @@ export function useKeyboardControls() {
       window.removeEventListener('blur', clear)
       document.removeEventListener('visibilitychange', visibility)
     }
-  }, [])
+  }, [fpv])
   return pressed
 }

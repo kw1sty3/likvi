@@ -210,6 +210,7 @@ test('a crash stops the race, blocks checkpoints and scoring, and reset starts a
 
 test('free-flight reset remains playable and a successful solo race still scores once', () => {
   useSimulatorStore.setState(useSimulatorStore.getInitialState(), true)
+  useSimulatorStore.getState().selectMap('polytech-arena')
   useSimulatorStore.getState().startFreeFlight()
   useSimulatorStore.getState().resetFlight()
   assert.equal(useSimulatorStore.getState().isFlying, true)

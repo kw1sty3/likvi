@@ -4,12 +4,18 @@ import { Euler, Quaternion, Vector3 } from 'three'
 import { useSimulatorStore } from '../store/useSimulatorStore'
 import { useKeyboardControls } from './useKeyboardControls'
 import { findCrashContact, snapshotBodyMotions } from '../physics/contactEvents'
-import { advanceControls, createFlightController, crossesRing, freezeDrone, PHYSICS_STEP, resetDrone, WORLD_HALF } from '../physics/dronePhysics'
+import { advanceControls, createFlightController, crossesRing, freezeDrone, PHYSICS_STEP, resetDrone, WORLD_HALF, FPV_FLIGHT, TRAINING_FLIGHT } from '../physics/dronePhysics'
+import { getTrack, isFpvTrack } from '../physics/fpvTracks'
+import { createFpvAutopilot } from '../physics/fpvAutopilot'
 import { waterContact } from '../physics/staticCollisionWorld'
 
 export function usePhysics(bodyRef, collisionWorldRef) {
-  const keys = useKeyboardControls()
-  const controller = useMemo(createFlightController, [])
+  const fpv = useSimulatorStore(state => isFpvTrack(state.selectedMapId))
+  const profile = fpv ? FPV_FLIGHT : TRAINING_FLIGHT
+  const keys = useKeyboardControls({ fpv })
+  const controller = useMemo(() => createFlightController(profile), [profile])
+  const selectedMapId = useSimulatorStore(state => state.selectedMapId)
+  const pilot = useMemo(() => fpv ? createFpvAutopilot(getTrack(selectedMapId)) : null, [fpv, selectedMapId])
   const revision = useRef(-1)
   const tick = useRef(0)
   const previous = useRef(new Vector3())
@@ -24,9 +30,13 @@ export function usePhysics(bodyRef, collisionWorldRef) {
     const body = bodyRef.current
     if (!body) return
     let state = useSimulatorStore.getState()
+    // Preserve a tap shorter than a physics tick (notably the H throttle trim).
+    // Read even while frozen so inputs released during countdown cannot linger.
+    const input = keys.readWithTaps()
     if (revision.current !== state.flightRevision) {
       resetDrone(body, state.startPosition)
       controller.reset()
+      pilot?.reset()
       revision.current = state.flightRevision
       tick.current = 0
     }
@@ -36,14 +46,18 @@ export function usePhysics(bodyRef, collisionWorldRef) {
       return
     }
     if (!body.isEnabled()) body.setEnabled(true)
-    const controls = advanceControls(state, keys.current, PHYSICS_STEP)
+    const controls = state.competitionMode === 'demo' ? pilot.step({ position: body.translation(), velocity: body.linvel(),
+      quaternion: body.rotation(), activeRingIndex: state.activeRingIndex }) : advanceControls(state, input, PHYSICS_STEP, profile)
     if (Object.keys(controls).some(key => controls[key] !== state[key])) state.updateState(controls)
     state = useSimulatorStore.getState()
     previous.current.copy(body.translation())
     preVelocity.current.copy(body.linvel())
     preAngular.current.copy(body.angvel())
     preCenter.current.copy(body.worldCom())
-    obstacleMotions.current = snapshotBodyMotions(world, body)
+    // Ordinary tracks contain fixed obstacles only. Capture moving obstacles
+    // when the articulated rig is enabled, rather than allocating every tick.
+    if (state.jointDemoEnabled) obstacleMotions.current = snapshotBodyMotions(world, body)
+    else obstacleMotions.current.clear()
     controller.step(body, state, PHYSICS_STEP)
   })
 

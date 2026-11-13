@@ -1,6 +1,6 @@
 import { Euler, Quaternion, Vector3 } from 'three'
 
-export function createDroneCamera() {
+export function createDroneCamera({ stabilizeFpv = false, chaseHeading = false } = {}) {
   const position = new Vector3()
   const orientation = new Quaternion()
   const angles = new Euler(0, 0, 0, 'YXZ')
@@ -8,10 +8,12 @@ export function createDroneCamera() {
   const lookTarget = new Vector3()
   const displacement = new Vector3()
   const up = new Vector3(0, 1, 0)
+  const right = new Vector3(1, 0, 0), cameraMount = new Quaternion()
   let previousControls = null
   let ready = false
+  let lastMode = null
 
-  return (camera, drone, mode, shiftLocked, controls) => {
+  return (camera, drone, mode, shiftLocked, controls, delta = 1 / 60) => {
     if (!drone) return
     // Read the rendered, interpolated pose rather than throttled HUD telemetry.
     drone.getWorldPosition(position)
@@ -37,10 +39,22 @@ export function createDroneCamera() {
       case 'fps':
         camera.position.copy(position).y += 0.3
         camera.quaternion.copy(orientation)
+        if (stabilizeFpv) {
+          // Keep the racing line visible during steep keyboard-controlled banks.
+          // Use the rendered attitude so camera compensation stays in sync with physics.
+          angles.setFromQuaternion(orientation, 'YXZ')
+          cameraMount.setFromAxisAngle(right, Math.max(-0.65, Math.min(0.65, -angles.x * 0.62)))
+          camera.quaternion.multiply(cameraMount)
+        }
         lookTarget.copy(position)
         break
       case 'follow':
-        camera.position.copy(position).add(offset.set(0, 12, 25))
+        if (chaseHeading) {
+          angles.setFromQuaternion(orientation, 'YXZ')
+          offset.set(0, 2.6, 10).applyAxisAngle(up, angles.y).add(position)
+          if (lastMode !== mode) camera.position.copy(offset)
+          else camera.position.lerp(offset, 1 - Math.exp(-Math.min(delta, 0.1) * 5))
+        } else camera.position.copy(position).add(offset.set(0, 12, 25))
         lookTarget.copy(position)
         lookTarget.y = Math.max(0.5, lookTarget.y)
         camera.up.copy(up)
@@ -61,5 +75,6 @@ export function createDroneCamera() {
       default:
         break
     }
+    lastMode = mode
   }
 }
